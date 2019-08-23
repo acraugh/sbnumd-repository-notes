@@ -4,8 +4,8 @@ The configuration on proteus uses the registry-2.0.0 distro from EN with the Doc
 took some finagling to get the docker container to work properly with the local security/SELinux settings,
 so unfortunately instead of using http://localhost:8983 as our access port we have to use the wide-open
 substitute http://proteus.astro.umd.edu:8983.  This also causes failures in some of the EN docker commands
-(as shown in the EN "Operation" manuals for harvest), because the localhost:8983 reference is hard-coded.
-There are Solr API work-arounds that can be used.
+if you follow exactly what is shown in the EN "Operation" manuals for harvest.  To work around it we need to 
+provide additional command options to the dockerized __registry__ software.
 
 ## Locations and Content
 
