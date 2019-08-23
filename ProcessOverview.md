@@ -32,7 +32,7 @@ where:
 required.
 * _log_file_ directs the flood of INFO messages (and any errors) to a file for you to review in a sensible way should
 something go wrong.  It's optional and may be omitted.  Check the last 30 lines of the file to see the processing summary.
-* _solr_docs_directory is where **harvest** should create the *solr_docs/* subdirectory that holds its output files.  
+* _solr_docs_directory_ is where **harvest** should create the *solr_docs/* subdirectory that holds its output files.  
 This is also optional.  If you don't specify a destination directory, **harvest** will create a *solr_docs/* directory 
 in your current working directory.  It will do this even if you have a *solr_docs/* directory already present in the
 location you give it/default to.  It will not delete the current version, though, but instead adds a rather long time
