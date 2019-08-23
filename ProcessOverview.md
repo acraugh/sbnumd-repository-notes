@@ -13,7 +13,7 @@ validated, so unless you're running a test harvest, this should already be done.
 Inspect the data to determine the full range of product type included, and it wouldn't be a bad idea to note how many of each
 product type (or in each collection) you expect to register.  Helps in tracking down harvesting glitches.
 
-The look at the typical data labels and note any fields from discipline dictionaries that would be useful to index for searching. 
+Then look at the typical data labels and note any fields from discipline dictionaries that would be useful to index for searching. 
 If we aren't already harvesting these fields, we should add them to the configuration.  Let me (Anne) know, and we'll do that.
 
 ## 2. Create the Harvest Policy File
