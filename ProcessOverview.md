@@ -21,15 +21,42 @@ If we aren't already harvesting these fields, we should add them to the configur
 See [HarvestPolicyFiles.MD](HarvestPolicyFiles.MD) for more detailed notes. For now, at least, your best bet is to start
 with a policy file for a similar data source, and modify it.
 
-## 3. Run Harvest
+## 3. Check Harvest Configuration!
+
+> __*N.B.:* Harvest__ *has weird and undocumented rules for what overrides what when multiple application configuration files
+> are found in its* search_conf/ *directory.*
+
+If you have configured your own copy of the __harvest__ package, you need to be aware that it comes with several sets of 
+configuration files for harvesting, most of which are not relevant. These confiuration files define data types and registry
+paths (a.k.a., "slot names" - the field names used in the Solr database to identify the metadata).
+
+We discovered through testing that these irrelevant 
+files can override the more generic files provided, creating unexpected results.  In order to avoid this issue, remove 
+all irrelevant files from your ```harvest-2.0.0/search-conf/``` directory.  Note that this is the __*search-conf/*__ 
+directory that needs to be cleaned out; the *harvest_conf/* directory just contains example policy files and does not affect the
+program execution at all.
+
+For PDS4 harvesting at SBN, the only relevant files are in ```search-conf/defaults/pds/pds4/```.
+
+The *search-conf/* directory is the default location for the site configuration files, referenced by the **harvest** 
+program, but this may change in future. 
+You may override whatever the current default is using the "-C" (note case) option along with the directory where the
+dfault configuration files are located.
+
+## 4. Run Harvest
 
 The typical invocation of **harvest** in our test area looks like this:
 
     % harvest -c policy_file -l log_file -o solr_docs_directory
     
+or, if you are supplying an explicit directory for the default site configuration:
+
+    % harvest -c policy_file -C default_dir -l log_file -o solr_docs_directory
+    
 where:
 * _policy_file_ is the file created in step 2 (include path information if it's not local). One file only, and this is 
 required.
+* _default_dir_ is the directory containing the default field definitions files for the site (SBN, in this case).
 * _log_file_ directs the flood of INFO messages (and any errors) to a file for you to review in a sensible way should
 something go wrong.  It's optional and may be omitted.  Check the last 30 lines of the file to see the processing summary.
 * _solr_docs_directory_ is where **harvest** should create the *solr_docs/* subdirectory that holds its output files.  
@@ -77,7 +104,7 @@ These files could be posted directly through the Solr API, but some additional p
 (specifically, a stylesheet translation is applied) to modify some field values for better searching. 
 The **registry** software is used to post data to the dockerized Solr instance.
 
-## 4. Move *solr_docs/* Files
+## 5. Move *solr_docs/* Files
 
 The dockerized Solr instance has extremely limited ability to reference disk space outside the docker container,
 and it has to be configured as part of the container creation process (at least until we get a local Docker
@@ -92,7 +119,7 @@ link - that will break the connection to the docker container.  If that happens,
 to succeeed, but hang before completing the last step.  Re-establishing the proper directory and 
 restarting the docker container will clear the problem.
 
-## 5. Run **registry post** 
+## 6. Run **registry post** 
 
 Once the files are in *register-2.0.0/solr-docs/*, this command should post the data to the "pds" collection
 in the registry database:
