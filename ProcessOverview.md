@@ -97,10 +97,30 @@ restarting the docker container will clear the problem.
 Once the files are in *register-2.0.0/solr-docs/*, this command should post the data to the "pds" collection
 in the registry database:
 
-    % docker exec -it -c pds -host proteus.astro.umd.edu -port 8983 -params "tr=add-hierarchy.xsl" /data/solr-docs
+    % docker exec -it registry post -c pds -host proteus.astro.umd.edu -port 8983 -params "tr=add-hierarchy.xsl" /data/solr-docs
     
-Note the addition of the ```-host``` and ```-port``` options not included in the **registry** documentation.  The
-```-port``` option is probably not needed, since we are using the default port, but I haven't tested that myself.
+_Note the addition of the ```-host``` and ```-port``` options not included in the **registry** documentation.  The
+```-port``` option is probably not needed, since we are using the default port, but I haven't tested that myself._
+
+Here's what's going on:
+
+```docker exec -it registry``` sends everything that follows as a command to be executed inside the docker container called 
+"registry".
+
+```post``` is the Solr *post* command that is executed inside the docker container. 
+
+```-c pds``` posts the information to the Solr collection called "pds".  If it doesn't exist, it is created.
+
+```-host proteus.astro.umd.edu -port 8983``` specifies the port (and host) that Solr is listening on for requests and commands.
+As explained above, this is needed in our particular case to override a default that does not work.
+
+```-params "tr=add-hierarchty.xsl"``` passes additional parameters to the *post* operation, in this case indicating that the stylesheet
+translation (*tr*) defined by the file "add-hierarchy.xsl" should be applied to each ```<doc>``` element before it is posted to the
+"pds" collection.  You can see what it looks like by examining the copy in ```registry-2.0.0/conf/xslt/``` in the working directory.
+(There is a copy in the docker container that is used for posting.)
+
+```/data/solr-docs``` is the mount point within the docker container that is bound to the ```registry-2.0.0/solr-docs/``` directory
+we have access to.
 
 This should run very quickly.  My last post took on the order of 10 seconds to post 7000+ ```<doc>``` elements in 
 half a dozen different files.  Once this completes, the new data will be visible in the "pds" collection via the
